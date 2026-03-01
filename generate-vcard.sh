@@ -2,6 +2,13 @@
 # vCard Generator
 # Usage: ./generate-vcard.sh "Full Name" "Company" "Title" "Phone" "Email" "Website" "Address"
 
+# Use the OpenClaw workspace env var if it exists; otherwise, default to a local directory.
+WORKSPACE_ROOT="${OPENCLAW_WORKSPACE:-$HOME/.openclaw/workspace}"
+CONTACTS_DIR="$WORKSPACE_ROOT/contacts"
+
+# Ensure the directory exists without hardcoding a specific user's path
+mkdir -p "$CONTACTS_DIR"
+
 FULL_NAME="$1"
 COMPANY="$2"
 TITLE="$3"
