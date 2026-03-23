@@ -73,15 +73,37 @@ linkedin.com/in/{firstname-lastname-company}/
 linkedin.com/in/{firstinitial-lastname}/
 ```
 
-### Step 4: Send Results
+### Step 4: Send vCard as Attachment (Telegram)
 
-Return to user:
-1. ✅ vCard file attachment (`.vcf`)
+For Telegram, use the OpenClaw CLI to send the vCard as a document attachment:
+
+```bash
+openclaw message send \
+  --channel telegram \
+  --target <chat_id> \
+  --media /home/chris/.openclaw/workspace/contacts/{FirstName}_{LastName}.vcf \
+  -m "📇 vCard for {FirstName} {LastName}"
+```
+
+**To get the chat_id:**
+```bash
+openclaw directory lookup --channel telegram
+```
+
+### Step 5: Send Summary with LinkedIn URL
+
+After sending the vCard, send a follow-up message with:
+1. ✅ Summary of extracted contact info
 2. ✅ LinkedIn search URL
-3. ✅ Summary of extracted contact info
 
 ## Example Output
 
+**First message (vCard attachment):**
+```
+📇 vCard for John Doe
+```
+
+**Second message:**
 ```
 ✅ Business Card Extracted!
 
@@ -92,11 +114,27 @@ Contact Info:
 • Phone: +1-555-123-4567
 • Email: john@acme.com
 
-📇 vCard attached - tap to save!
-
-🔗 LinkedIn:
-linkedin.com/search/results/people/?keywords=John%20Doe%20Acme%20Corp
+🔗 LinkedIn Search:
+https://www.linkedin.com/search/results/people/?keywords=John%20Doe%20Acme%20Corp
 ```
+
+## Automated vCard Sending
+
+The skill can automatically send the vCard using the `exec` tool to run the OpenClaw CLI:
+
+```bash
+# Get current chat ID from context
+CHAT_ID="${CURRENT_CHAT_ID}"
+
+# Send vCard
+openclaw message send \
+  --channel telegram \
+  --target "$CHAT_ID" \
+  --media ./contacts/{FirstName}_{LastName}.vcf \
+  -m "📇 vCard attached - tap to save!"
+```
+
+**Note:** The chat_id is automatically available in the session context when processing an inbound message.
 
 ## Implementation Tips
 
@@ -109,6 +147,8 @@ linkedin.com/search/results/people/?keywords=John%20Doe%20Acme%20Corp
 - Create `/workspace/contacts/` directory if it doesn't exist
 - Use `{FirstName}_{LastName}.vcf` naming convention
 - Handle special characters in names (remove or replace)
+- **Always send as attachment** using `message` tool with `attachments` parameter
+- Use relative path `./contacts/{FirstName}_{LastName}.vcf` when attaching
 
 ### LinkedIn URL Best Practices
 - Always provide search URL (100% reliable)
@@ -129,9 +169,31 @@ linkedin.com/search/results/people/?keywords=John%20Doe%20Acme%20Corp
 | Tool | Purpose |
 |------|---------|
 | `read` | Read the business card image |
-| `exec` | Run tesseract OCR |
-| `write` | Save vCard file |
-| `message` | Send vCard and results to user |
+| `exec` | Run tesseract OCR and send vCard via CLI |
+| `write` | Save vCard file to workspace |
+
+## vCard Delivery Methods
+
+### Method 1: CLI Command (Telegram/Discord/Email)
+Use `openclaw message send` with `--media` flag:
+
+```bash
+openclaw message send \
+  --channel telegram \
+  --target <chat_id> \
+  --media ./contacts/John_Doe.vcf \
+  -m "📇 vCard attached!"
+```
+
+### Method 2: Workspace File (Universal)
+Save to `{workspace}/contacts/{FirstName}_{LastName}.vcf` and inform user of the location.
+
+### Method 3: Copy-Paste (Fallback)
+Provide the vCard content in a code block for manual saving.
+
+## Configuration for Automatic Sending
+
+To enable automatic vCard sending, the skill uses `exec` to run the OpenClaw CLI. No additional configuration needed — just ensure OpenClaw CLI is installed and the channel is configured.
 
 ## Why This Approach?
 

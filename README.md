@@ -1,106 +1,112 @@
 # Business Card Lookup Skill 📇
 
-**Turn business card photos into contacts instantly!**
+Extract contact information from business card photos using OCR, create vCard (.vcf) files, and generate LinkedIn search URLs.
 
-Extract contact info from business card photos using OCR, create vCard files you can save to contacts, and generate LinkedIn search URLs.
+## Features
 
-## ✨ Features
+- 🔍 OCR extraction using Tesseract (no API keys needed)
+- 📇 Automatic vCard (.vcf) generation
+- 📤 Direct vCard attachment via Telegram/Discord
+- 🔗 LinkedIn search URL generation
+- 🖼️ Works with any business card photo
 
-- 📸 **OCR Extraction** - Reads text from business card photos
-- 📇 **vCard Generation** - Creates .vcf files for your contacts app
-- 🔗 **LinkedIn Search** - Generates search URLs to find profiles
-- 🆓 **No API Keys** - Uses built-in Tesseract OCR
-- 📱 **Mobile Friendly** - Works on any device
+## Installation
 
-## 🚀 Quick Start
+1. Clone this repository into your OpenClaw skills directory:
+   ```bash
+   git clone https://github.com/YOUR_USERNAME/openclaw-business-card-lookup.git ~/.openclaw/skills/business-card-lookup
+   ```
 
-**Just send a business card photo!**
+2. Install Tesseract OCR:
+   ```bash
+   # Ubuntu/Debian
+   sudo apt-get install tesseract-ocr tesseract-ocr-eng
 
-Example flow:
+   # macOS
+   brew install tesseract
+
+   # Windows
+   # Download from https://github.com/UB-Mannheim/tesseract/wiki
+   ```
+
+3. Verify OpenClaw recognizes the skill:
+   ```bash
+   openclaw skills list | grep business-card
+   ```
+
+## Usage
+
+Simply send a business card photo to your OpenClaw agent. The skill will:
+
+1. Extract text using OCR
+2. Parse contact information (name, title, company, phone, email)
+3. Create a vCard file
+4. Send the vCard as an attachment (Telegram/Discord)
+5. Provide LinkedIn search URL
+
+## Requirements
+
+- OpenClaw with Telegram or Discord channel configured
+- Tesseract OCR installed
+- No API keys required!
+
+## How It Works
+
+The skill uses a multi-step workflow:
+
+1. **OCR Extraction**: Uses Tesseract with `--psm 6` for business card text extraction
+2. **Contact Parsing**: Identifies name, title, company, phone, email, website from OCR text
+3. **vCard Generation**: Creates standard vCard 3.0 format files
+4. **File Attachment**: Uses OpenClaw CLI to send vCard as document attachment
+5. **LinkedIn URL**: Generates search URLs for finding the contact on LinkedIn
+
+## Example Output
+
 ```
-You: [sends business card photo]
+✅ Business Card Extracted!
 
-Skill: ✅ Business Card Extracted!
-       
-       Contact Info:
-       • Name: John Doe
-       • Title: CEO at Acme Corp
-       • Phone: +1-555-123-4567
-       • Email: john@acme.com
-       
-       📇 vCard attached - tap to save!
-       
-       🔗 LinkedIn:
-       linkedin.com/search/results/people/?keywords=John%20Doe%20Acme%20Corp
+📇 vCard sent — check your Telegram for the attachment!
+
+Contact Info:
+• Name: John Doe
+• Title: CEO
+• Company: Acme Corp
+• Phone: +1-555-123-4567
+• Email: john@acme.com
+
+🔗 LinkedIn Search:
+https://www.linkedin.com/search/results/people/?keywords=John%20Doe%20Acme%20Corp
 ```
 
-## 📦 What You Get
+## Configuration
 
-1. **vCard Attachment** (.vcf file)
-   - Tap to save directly to phone contacts
-   - Works on iOS, Android, desktop
+The skill automatically detects your chat ID from the inbound message context. No manual configuration needed!
 
-2. **LinkedIn Search URL**
-   - Click to see search results
-   - Find the right profile among matches
+## Troubleshooting
 
-3. **Contact Summary**
-   - All extracted info in readable format
-   - Easy to verify accuracy
+| Issue | Solution |
+|-------|----------|
+| OCR returns garbled text | Try sending a clearer photo with better lighting |
+| vCard not sending | Check that `openclaw message send` works in your terminal |
+| Missing contact fields | The skill will ask you to confirm or fill in missing info |
 
-## 🛠️ Requirements
+## Privacy
 
-- ✅ Tesseract OCR (usually pre-installed)
-- ✅ OpenClaw workspace
-- ❌ No API keys needed!
-- ❌ No browser extension needed!
+- All processing happens locally on your machine
+- No data is sent to external APIs (except LinkedIn URLs for your own use)
+- vCards are stored in your OpenClaw workspace only
 
-## 📁 Files
+## License
 
-```
-business-card-lookup/
-├── SKILL.md           # Skill documentation
-├── README.md          # This file
-├── extract-contact.sh # OCR extraction script
-├── generate-vcard.sh  # vCard generator script
-└── contacts/          # Generated vCards stored here
-```
+MIT License - Feel free to use and modify!
 
-## 🎯 Use Cases
+## Contributing
 
-- **Networking events** - Scan cards on the spot
-- **Sales leads** - Build contact list from cards
-- **Conference follow-ups** - Process stack of cards
-- **Personal contacts** - Save contacts from meetings
-- **Team sharing** - Share contact vCards with colleagues
+Pull requests welcome! Please ensure:
+- Skill follows OpenClaw skill conventions
+- Documentation is updated
+- Test with multiple business card formats
 
-## 💡 Tips
+## Author
 
-- **Good photos** = Better OCR (good lighting, flat surface)
-- **Verify** important contacts (phone, email)
-- **LinkedIn search** shows all matches (not just first result)
-- **vCards** work across all platforms (iOS, Android, Outlook, etc.)
-
-## 🌍 Share This Skill
-
-Want others to use this? Share it!
-
-- **OpenClaw Hub**: https://clawhub.com
-- **GitHub**: Publish as public repo
-- **Discord**: OpenClaw Community Server
-- **Direct share**: Copy the skill folder
-
-## 📝 Version
-
-**v2.0** - Simplified (removed browser automation, 100% reliable URLs)
-
-## 🙋 Support
-
-Issues or questions? Check:
-- OpenClaw Docs: https://docs.openclaw.ai
-- Community Discord: https://discord.com/invite/clawd
-- Skill Hub: https://clawhub.com
-
----
-
-**Built with ❤️ for OpenClaw**
+Created by Chris Liu (liufengchris)
